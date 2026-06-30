@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScentX — Perfumería de Lujo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0A0A0A;
+      --smoke:   #2A2A2A;
+      --gold:    #C9A84C;
+      --gold-lt: #E2C97E;
+      --ivory:   #F5F0E8;
+      --white:   #FAFAF5;
+      --serif:   'Cormorant Garamond', Georgia, serif;
+      --sans:    'Inter', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--ivory);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--white); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--ivory);
+      font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: transparent; border: 1px solid var(--gold);
+      color: var(--gold); font-family: var(--sans); font-size: 0.75rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.55rem 1.4rem; cursor: pointer; transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--gold); color: var(--black); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 0 2rem;
+      overflow: hidden;
+      padding-top: 110px;
+    }
+    /* Mist/vapor canvas */
+    #mist { position: absolute; inset: 0; z-index: 0; opacity: 0.55; }
+
+    .hero-img-bg {
+      position: absolute; inset: 0;
+      background: url('hero-bg.jpg') center/cover no-repeat;
+      filter: brightness(0.25);
+      z-index: 0;
+    }
+    /* fallback gradient if no image */
+    .hero-img-bg.no-img {
+      background: radial-gradient(ellipse at 60% 40%, #2a1a0a 0%, #0A0A0A 65%);
+      filter: none;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; }
+    .hero-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: var(--serif); font-size: clamp(3.5rem, 9vw, 7rem);
+      font-weight: 300; line-height: 1.05; color: var(--white);
+      margin-bottom: 1.2rem;
+    }
+    .hero-title em { font-style: italic; color: var(--gold-lt); }
+    .hero-sub {
+      font-size: 1rem; color: rgba(245,240,232,0.65);
+      max-width: 460px; margin: 0 auto 2.8rem;
+      font-weight: 300; letter-spacing: 0.04em;
+    }
+    .btn-primary {
+      display: inline-block; background: var(--gold); color: var(--black);
+      font-family: var(--sans); font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
+      padding: 1rem 2.8rem; transition: background 0.3s;
+    }
+    .btn-primary:hover { background: var(--gold-lt); }
+    .btn-ghost {
+      display: inline-block; border: 1px solid rgba(245,240,232,0.35);
+      color: var(--ivory); font-family: var(--sans); font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
+      padding: 1rem 2.8rem; margin-left: 1rem; transition: all 0.3s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .hero-divider {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    }
+    .hero-divider span { font-size: 0.65rem; letter-spacing: 0.25em; color: rgba(201,168,76,0.5); text-transform: uppercase; }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollDown 2s ease-in-out infinite;
+    }
+    @keyframes scrollDown { 0%,100%{opacity:0;transform:scaleY(0);transform-origin:top} 50%{opacity:1;transform:scaleY(1)} }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 7rem 4rem; }
+    .section-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300; color: var(--white); line-height: 1.15;
+    }
+    .gold-rule {
+      width: 48px; height: 1px; background: var(--gold);
+      margin: 1.5rem 0 2rem;
+    }
+
+    /* ── ABOUT ── */
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .about-img {
+      aspect-ratio: 3/4; background: var(--smoke);
+      position: relative; overflow: hidden;
+    }
+    .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-img-placeholder {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1rem; color: rgba(201,168,76,0.4);
+    }
+    .about-img-placeholder svg { width: 48px; opacity: 0.4; }
+    .about-img-placeholder span { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; }
+    .about-text p {
+      color: rgba(245,240,232,0.7); font-size: 1rem; line-height: 1.85;
+      margin-bottom: 1.2rem;
+    }
+    .about-stats { display: flex; gap: 3rem; margin-top: 2.5rem; }
+    .stat-num {
+      font-family: var(--serif); font-size: 2.8rem; font-weight: 300; color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.72rem; letter-spacing: 0.15em; color: rgba(245,240,232,0.5); text-transform: uppercase; margin-top: 0.3rem; }
+
+    /* ── CATALOG ── */
+    .catalog-section { background: var(--smoke); }
+    .catalog-header { text-align: center; margin-bottom: 4rem; }
+    .catalog-header .gold-rule { margin: 1.5rem auto 2rem; }
+    .filter-bar {
+      display: flex; justify-content: center; gap: 0.5rem;
+      flex-wrap: wrap; margin-bottom: 3.5rem;
+    }
+    .filter-btn {
+      background: transparent; border: 1px solid rgba(201,168,76,0.3);
+      color: rgba(245,240,232,0.6); font-family: var(--sans);
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.5rem 1.2rem; cursor: pointer; transition: all 0.25s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--gold); color: var(--gold);
+    }
+    .catalog-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2px;
+    }
+    .product-card {
+      background: var(--black); position: relative; overflow: hidden;
+      cursor: pointer; transition: transform 0.4s;
+    }
+    .product-card:hover { transform: translateY(-4px); }
+    .product-img {
+      aspect-ratio: 3/4; background: #1a1a1a;
+      position: relative; overflow: hidden;
+    }
+    .product-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s; }
+    .product-card:hover .product-img img { transform: scale(1.04); }
+    .product-img-placeholder {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; flex-direction: column; gap: 0.8rem;
+      color: rgba(201,168,76,0.25);
+    }
+    .product-img-placeholder svg { width: 36px; }
+    .product-img-placeholder span { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; }
+    .size-tag {
+      position: absolute; bottom: 1rem; right: 1rem;
+      background: rgba(10,10,10,0.75); border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold); font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.25rem 0.6rem; backdrop-filter: blur(4px);
+    }
+      background: var(--gold); color: var(--black);
+      font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.3rem 0.7rem; font-weight: 500;
+    }
+    .product-info { padding: 1.4rem 1.2rem; }
+    .product-family { font-size: 0.65rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.4rem; }
+    .product-name { font-family: var(--serif); font-size: 1.25rem; color: var(--white); margin-bottom: 0.3rem; }
+    .product-note { font-size: 0.8rem; color: rgba(245,240,232,0.45); margin-bottom: 1rem; }
+    .product-footer { display: flex; align-items: center; justify-content: space-between; }
+    .product-price { font-family: var(--serif); font-size: 1.3rem; color: var(--gold-lt); }
+    .add-btn {
+      background: transparent; border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold); font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.45rem 0.9rem;
+      cursor: pointer; transition: all 0.25s; font-family: var(--sans);
+    }
+    .add-btn:hover { background: var(--gold); color: var(--black); }
+
+    /* ── EXPERIENCE ── */
+    .experience { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .exp-visual {
+      background: #111; position: relative; overflow: hidden;
+      min-height: 500px;
+    }
+    .exp-visual img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.6); }
+    .exp-visual-placeholder {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, #1a0f04 0%, #0A0A0A 70%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .exp-text {
+      background: #0f0f0f; display: flex; flex-direction: column;
+      justify-content: center; padding: 5rem;
+    }
+    .exp-features { list-style: none; margin-top: 2rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .exp-features li { display: flex; align-items: flex-start; gap: 1rem; }
+    .exp-icon { color: var(--gold); font-size: 1rem; margin-top: 0.1rem; flex-shrink: 0; }
+    .exp-feat-title { font-family: var(--serif); font-size: 1.05rem; color: var(--white); margin-bottom: 0.2rem; }
+    .exp-feat-desc { font-size: 0.82rem; color: rgba(245,240,232,0.5); line-height: 1.6; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { text-align: center; }
+    .testimonials .section-title { margin-bottom: 0; }
+    .testimonials .gold-rule { margin: 1.5rem auto 3.5rem; }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .testimonial-card { background: var(--smoke); padding: 2.5rem 2rem; text-align: left; }
+    .stars { color: var(--gold); font-size: 0.9rem; letter-spacing: 0.1em; margin-bottom: 1.2rem; }
+    .testimonial-text { font-family: var(--serif); font-size: 1.05rem; font-style: italic; color: var(--ivory); line-height: 1.75; margin-bottom: 1.5rem; }
+    .testimonial-author { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); text-transform: uppercase; }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--smoke); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+    .contact-info p { color: rgba(245,240,232,0.6); font-size: 0.9rem; line-height: 1.8; margin-bottom: 2rem; }
+    .contact-details { display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-item { display: flex; align-items: flex-start; gap: 1rem; }
+    .c-icon { color: var(--gold); font-size: 1rem; margin-top: 0.1rem; }
+    .c-text { font-size: 0.85rem; color: rgba(245,240,232,0.65); }
+    .c-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.2rem; }
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(245,240,232,0.5); }
+    .form-group input, .form-group textarea, .form-group select {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.2);
+      color: var(--ivory); font-family: var(--sans); font-size: 0.88rem;
+      padding: 0.85rem 1rem; outline: none; transition: border-color 0.25s;
+    }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--gold);
+    }
+    .form-group select option { background: var(--smoke); }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #050505; border-top: 1px solid rgba(201,168,76,0.12);
+      padding: 4rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+    }
+    .footer-brand .nav-logo { font-size: 1.5rem; display: block; margin-bottom: 1rem; }
+    .footer-brand p { font-size: 0.82rem; color: rgba(245,240,232,0.4); line-height: 1.7; max-width: 280px; }
+    .footer-col h4 { font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .footer-col ul a { font-size: 0.82rem; color: rgba(245,240,232,0.45); text-decoration: none; transition: color 0.25s; }
+    .footer-col ul a:hover { color: var(--gold); }
+    .footer-bottom {
+      background: #050505; padding: 1.5rem 4rem;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.72rem;
+      color: rgba(245,240,232,0.25); letter-spacing: 0.05em;
+    }
+
+    /* ── CART INDICATOR ── */
+    .cart-badge {
+      position: relative; cursor: pointer;
+    }
+    .badge-dot {
+      position: absolute; top: -6px; right: -8px;
+      background: var(--gold); color: var(--black);
+      font-size: 0.55rem; font-weight: 600;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── NOTIFICATION ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 999;
+      background: var(--gold); color: var(--black);
+      font-size: 0.8rem; letter-spacing: 0.1em;
+      padding: 0.9rem 1.6rem; font-weight: 500;
+      transform: translateY(100px); opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      .about { grid-template-columns: 1fr; gap: 3rem; }
+      .experience { grid-template-columns: 1fr; }
+      .exp-text { padding: 3rem 2rem; }
+      .contact { grid-template-columns: 1fr; gap: 3rem; }
+      .testimonials-grid { grid-template-columns: 1fr; gap: 2px; }
+      footer { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; gap: 0.5rem; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 500px) {
+      .hero-title { font-size: 3rem; }
+      footer { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="#" class="nav-logo">SCENT<span>X</span></a>
+  <ul class="nav-links">
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#catalogo">Catálogo</a></li>
+    <li><a href="#experiencia">Experiencia</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <div class="cart-badge" onclick="showCart()" title="Carrito">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--ivory)">
+        <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/>
+      </svg>
+      <span class="badge-dot" id="cartCount">0</span>
+    </div>
+    <button class="nav-cta" onclick="window.open('https://wa.me/522361089341','_blank')">Pedir por WhatsApp</button>
+  </div>
+</nav>
+
+<!-- ═══ SHIPPING BANNER ═══ -->
+<div style="background:var(--gold);color:var(--black);text-align:center;padding:0.55rem 1rem;font-family:var(--sans);font-size:0.72rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;position:fixed;top:72px;left:0;right:0;z-index:99;">
+  🚚 &nbsp;Envíos gratis a toda la región de Coxcatlán
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-img-bg no-img" id="heroBg"></div>
+  <canvas id="mist"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Perfumería masculina · Fragancias de autor</p>
+    <h1 class="hero-title">El arte de tu<br/><em>primera impresión</em></h1>
+    <p class="hero-sub">Fragancias cuidadosamente seleccionadas para quienes entienden que el aroma es la firma más íntima del carácter.</p>
+    <div>
+      <a href="#catalogo" class="btn-primary">Explorar catálogo</a>
+      <a href="#nosotros" class="btn-ghost">Nuestra historia</a>
+    </div>
+  </div>
+  <div class="hero-divider">
+    <span></span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="nosotros">
+  <div class="about">
+    
+    </div>
+    <div class="about-text">
+      <p class="section-eyebrow">Nuestra historia</p>
+      <h2 class="section-title">Más que un perfume,<br/>una identidad</h2>
+      <div class="gold-rule"></div>
+      <p>En ScentX creemos que la fragancia no se elige, se descubre. Cada decant en nuestra colección es seleccionado con cuidado, buscando calidad y autenticidad en cada botella.</p>
+      <p>Somos un negocio joven con muchas ganas, ubicados en San José Tilapa. Nos enfocamos en acercarte fragancias de marcas reconocidas a un precio accesible, con atención personalizada y envíos directos a tu puerta.</p>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CATALOG ═══ -->
+<section id="catalogo" class="catalog-section">
+  <div class="catalog-header">
+    <p class="section-eyebrow">Colección masculina · Decants 5ml</p>
+    <h2 class="section-title">Nuestro catálogo</h2>
+    <div class="gold-rule"></div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('todos',this)">Todos</button>
+    <button class="filter-btn" onclick="filterProducts('afnan',this)">Afnan</button>
+    <button class="filter-btn" onclick="filterProducts('rasasi',this)">Rasasi</button>
+    <button class="filter-btn" onclick="filterProducts('jpg',this)">Jean Paul Gaultier</button>
+    <button class="filter-btn" onclick="filterProducts('valentino',this)">Valentino</button>
+  </div>
+  <div class="catalog-grid" id="catalogGrid"></div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experiencia" style="padding:0">
+  <div class="experience">
+    <div class="exp-visual">
+      <!-- Reemplaza con: <img src="LOGO.jpeg" alt="Experiencia ScentX" /> -->
+      <img src="img/LOGOS.jpeg"  alt="Experiencia ScentX">
+      </div>
+    <div class="exp-text">
+      <p class="section-eyebrow">Por qué elegirnos</p>
+      <h2 class="section-title">Una experiencia pensada para tus sentidos</h2>
+      <div class="gold-rule"></div>
+      <ul class="exp-features">
+        <li>
+          <div class="exp-icon">✦</div>
+          <div>
+            <div class="exp-feat-title">Asesoría personalizada</div>
+            <div class="exp-feat-desc">Nuestros expertos te guían para encontrar la fragancia que habla de ti, en función de tu personalidad y estilo de vida.</div>
+          </div>
+        </li>
+        <li>
+          <div class="exp-icon">✦</div>
+          <div>
+            <div class="exp-feat-title">Envío seguro y discreto</div>
+            <div class="exp-feat-desc">Cada pedido llega en empaque premium con protección especial para los frascos, a cualquier punto del país.</div>
+          </div>
+        </li>
+        <li>
+          <div class="exp-icon">✦</div>
+          <div>
+            <div class="exp-feat-title">Garantía de autenticidad</div>
+            <div class="exp-feat-desc">Trabajamos directamente con distribuidores autorizados. Cada fragancia tiene certificado de autenticidad.</div>
+          </div>
+        </li>
+        <li>
+          <div class="exp-icon">✦</div>
+          <div>
+            <div class="exp-feat-title">Muestras gratuitas</div>
+            <div class="exp-feat-desc">¿No estás seguro? Solicita hasta 3 muestras de fragancias y decide desde la comodidad de tu hogar.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section class="testimonials">
+  <p class="section-eyebrow">Lo que dicen</p>
+  <h2 class="section-title">Nuestros clientes</h2>
+  <div class="gold-rule" style="margin:1.5rem auto 3.5rem"></div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"Llevaba años buscando algo diferente. En ScentX no solo encontré mi perfume, encontré mi identidad olfativa. El servicio es impecable."</p>
+      <div class="testimonial-author">— Valentina R., Ciudad de México</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"La asesoría fue increíble. Me hicieron preguntas que nunca me había hecho sobre mis gustos y el resultado fue perfecto. Totalmente recomendado."</p>
+      <div class="testimonial-author">— Andrés M., Guadalajara</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">"El empaque llegó hermoso y el perfume es exactamente lo que esperaba. Se nota que cuidan cada detalle. Ya hice mi segundo pedido."</p>
+      <div class="testimonial-author">— Sofía L., Monterrey</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contacto" class="contact">
+  <div class="contact-info">
+    <p class="section-eyebrow">Contáctanos</p>
+    <h2 class="section-title">Estamos para ti</h2>
+    <div class="gold-rule"></div>
+    <p>¿Tienes dudas sobre una fragancia, tu pedido o simplemente quieres una asesoría? Escríbenos, con gusto te atendemos.</p>
+    <div class="contact-details">
+      <div class="contact-item">
+        <div class="c-icon">📍</div>
+        <div>
+          <div class="c-label">Ubicación</div>
+          <div class="c-text">San José Tilapa, Puebla</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">📱</div>
+        <div>
+          <div class="c-label">WhatsApp</div>
+          <a href="https://wa.me/522361089341" target="_blank" class="c-text" style="color:rgba(245,240,232,0.65);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,240,232,0.65)'">+52 236 108 9341</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">✉️</div>
+        <div>
+          <div class="c-label">Correo</div>
+          <a href="mailto:juanmorasanchez6330@gmail.com" class="c-text" style="color:rgba(245,240,232,0.65);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,240,232,0.65)'">juanmorasanchez6330@gmail.com</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">📲</div>
+        <div>
+          <div class="c-label">Instagram</div>
+          <a href="https://www.instagram.com/scenntx/" target="_blank" class="c-text" style="color:rgba(245,240,232,0.65);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='rgba(245,240,232,0.65)'">@scenntx</a>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="c-icon">🚚</div>
+        <div>
+          <div class="c-label">Envíos</div>
+          <div class="c-text" style="color:var(--gold-lt)">Gratis a toda la región de Coxcatlán</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" placeholder="Tu nombre" />
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="correo@ejemplo.com" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Asunto</label>
+        <select>
+          <option>Asesoría de fragancia</option>
+          <option>Seguimiento de pedido</option>
+          <option>Solicitar muestra</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Mensaje</label>
+        <textarea placeholder="¿En qué podemos ayudarte?"></textarea>
+      </div>
+      <button class="btn-primary" style="width:100%;text-align:center;border:none;cursor:pointer" onclick="sendContact()">Enviar por WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="nav-logo">SCENT<span>X</span></a>
+    <p>Fragancias que definen carácter. Cada aroma, una historia. Cada elección, una declaración.</p>
+  </div>
+  <div class="footer-col">
+    <h4>Catálogo</h4>
+    <ul>
+      <li><a href="#catalogo">Afnan</a></li>
+      <li><a href="#catalogo">Rasasi</a></li>
+      <li><a href="#catalogo">Jean Paul Gaultier</a></li>
+      <li><a href="#catalogo">Valentino</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Ayuda</h4>
+    <ul>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a href="#">Envíos</a></li>
+      <li><a href="#">Devoluciones</a></li>
+      <li><a href="#">Autenticidad</a></li>
+    </ul>
+  </div>
+  <div class="footer-col">
+    <h4>Síguenos</h4>
+    <ul>
+      <li><a href="https://www.instagram.com/scenntx/" target="_blank">Instagram · @scenntx</a></li>
+      <li><a href="https://wa.me/522361089341" target="_blank">WhatsApp</a></li>
+      <li><a href="mailto:juanmorasanchez6330@gmail.com">Correo electrónico</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2025 ScentX · Todos los derechos reservados</span>
+  <span>Hecho con ✦ en México</span>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── PRODUCTS DATA ──
+const products = [
+  {
+    id:1, name:"9AM", family:"Afnan · Para él", category:"afnan",
+    note:"Pomelo · Canela · Ámbar", price:"$70",
+    badge:"Popular",
+    img:"img/9AM.jpeg" },
+  {
+    id:2, name:"9PM", family:"Afnan · Para él", category:"afnan",
+    note:"Manzana · Rosas · Sándalo", price:"$70",
+    badge:"",
+    img:"img/9PM.jpeg" },
+  {
+    id:3, name:"Hawas For Him", family:"Rasasi · Para él", category:"rasasi",
+    note:"Menta · Coco · Almizcle marino", price:"$80",
+    badge:"Bestseller",
+    img:"img/HAWASFORHIM.jpeg"},
+  {
+    id:4, name:"Hawas Ice", family:"Rasasi · Para él", category:"rasasi",
+    note:"Bergamota · Hielo marino · Cedro", price:"$100",
+    badge:"Fresco",
+    img:"img/HAWASICE.jpeg"},
+  {
+    id:5, name:"Le Beau", family:"Jean Paul Gaultier · Para él", category:"jpg",
+    note:"Coco · Neroli · Iris · Vainilla", price:"$150",
+    badge:"Exclusivo",
+    img:"img/JPG.jpeg" },
+  {
+    id:6, name:"Born in Roma Purple", family:"Valentino · Para él", category:"valentino",
+    note:"Bergamota · Violeta · Patchouli", price:"$220",
+    badge:"Premium",
+    img:"img/VALENTINO.jpeg" },
+];
+
+let cartCount = 0;
+
+function renderProducts(filter = 'todos') {
+  const grid = document.getElementById('catalogGrid');
+  const filtered = filter === 'todos' ? products : products.filter(p => p.category === filter);
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card">
+      <div class="product-img">
+        ${p.img
+          ? `<img src="${p.img}" alt="${p.name}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+             <div class="product-img-placeholder" style="display:none">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+                 <rect x="3" y="3" width="18" height="18" rx="1"/>
+                 <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+               </svg>
+               <span>${p.name}</span>
+             </div>`
+          : `<div class="product-img-placeholder">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8">
+                 <rect x="3" y="3" width="18" height="18" rx="1"/>
+                 <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+               </svg>
+               <span>Imagen del producto</span>
+             </div>`}
+        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+        <span class="size-tag">5 ml</span>
+      </div>
+      <div class="product-info">
+        <div class="product-family">${p.family}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-note">${p.note}</div>
+        <div class="product-footer">
+          <div class="product-price">${p.price}</div>
+          <button class="add-btn" onclick="addToCart('${p.name}')">+ Agregar</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+function addToCart(name) {
+  cartCount++;
+  document.getElementById('cartCount').textContent = cartCount;
+  showToast(`✦ ${name} añadido al carrito`);
+}
+
+function showCart() {
+  if (cartCount === 0) { showToast('Tu carrito está vacío'); return; }
+  const msg = encodeURIComponent(`Hola! Me interesa hacer un pedido en ScentX. Tengo ${cartCount} producto(s) en mi carrito.`);
+  window.open(`https://wa.me/522361089341?text=${msg}`, '_blank');
+}
+
+function sendContact() {
+  const msg = encodeURIComponent('Hola! Te contacto desde la página web de ScentX. Me gustaría más información sobre sus fragancias.');
+  window.open(`https://wa.me/522361089341?text=${msg}`, '_blank');
+  showToast('✦ Abriendo WhatsApp...');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── MIST ANIMATION ──
+(function() {
+  const canvas = document.getElementById('mist');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function Particle() {
+    this.reset();
+  }
+  Particle.prototype.reset = function() {
+    this.x = Math.random() * W;
+    this.y = H + Math.random() * 100;
+    this.r = 40 + Math.random() * 120;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = -(0.2 + Math.random() * 0.5);
+    this.alpha = 0;
+    this.maxAlpha = 0.03 + Math.random() * 0.07;
+    this.life = 0;
+    this.maxLife = 200 + Math.random() * 300;
+  };
+  Particle.prototype.update = function() {
+    this.x += this.vx; this.y += this.vy; this.life++;
+    const half = this.maxLife / 2;
+    this.alpha = this.life < half
+      ? (this.life / half) * this.maxAlpha
+      : ((this.maxLife - this.life) / half) * this.maxAlpha;
+    if (this.life >= this.maxLife) this.reset();
+  };
+  Particle.prototype.draw = function() {
+    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, `rgba(201,168,76,${this.alpha})`);
+    g.addColorStop(1, 'rgba(201,168,76,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fill();
+  };
+
+  for (let i = 0; i < 18; i++) {
+    const p = new Particle();
+    p.life = Math.floor(Math.random() * p.maxLife);
+    particles.push(p);
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+// ── INIT ──
+renderProducts();
+</script>
+</body>
+</html>
